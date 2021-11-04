@@ -24,7 +24,7 @@ public class EnderecoService {
 	}
 
 	public Endereco buscarEnderecoPorCep(String cep) {
-		return Optional.ofNullable(enderecoRepository.findByCep(cep)).orElseThrow();
+		return enderecoRepository.findByCep(cep);
 	}
 
 	public Endereco inserirEndereco(Endereco endereco) {

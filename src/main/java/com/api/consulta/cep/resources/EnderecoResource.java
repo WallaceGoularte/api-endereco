@@ -3,8 +3,6 @@ package com.api.consulta.cep.resources;
 import java.text.MessageFormat;
 import java.util.List;
 
-import javax.management.RuntimeErrorException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,16 +32,13 @@ public class EnderecoResource {
 	public ResponseEntity<Endereco> listarJogosPorId(@PathVariable final String cep) {
 		Endereco endereco = this.enderecoService.buscarEnderecoPorCep(cep);
 		
-		if (endereco.equals(null)) {
-			RestTemplate restTemplate = new RestTemplate();
-
-			return ResponseEntity.ok().body(restTemplate.getForObject(this.getUrlApiCep(cep),	Endereco.class));
+		if (endereco == null) {
+			return ResponseEntity.ok().body(restTemplateForObject(cep));
 		}
-		
 		
 		return ResponseEntity.ok().body(endereco);
 	}
-	
+
 	@RequestMapping(method = RequestMethod.POST)
 	public Endereco inserir(@RequestBody Endereco endereco) {
 		return this.enderecoService.inserirEndereco(endereco);
@@ -51,10 +46,8 @@ public class EnderecoResource {
 	
 	@RequestMapping(value = "/{cep}", method = RequestMethod.POST)
 	public Endereco inserir(@RequestBody EnderecoDTO dto) {
-		if (!dto.getCep().equals(null) && !dto.getCep().isEmpty()) {
-			RestTemplate restTemplate = new RestTemplate();
-			
-			final Endereco endereco = restTemplate.getForObject(this.getUrlApiCep(dto.getCep()), Endereco.class);
+		if (dto.getCep() != null && !dto.getCep().isEmpty()) {
+			Endereco endereco = restTemplateForObject(dto.getCep());
 			return this.enderecoService.inserirEndereco(endereco);
 		} else {
 			throw new RuntimeException("Cep inválido");
@@ -62,6 +55,11 @@ public class EnderecoResource {
 		
 	}
 
+	private Endereco restTemplateForObject(final String cep) {
+		RestTemplate restTemplate = new RestTemplate();
+		return restTemplate.getForObject(this.getUrlApiCep(cep), Endereco.class);
+	}
+	
 	private String getUrlApiCep(String cep) {
 		return MessageFormat.format("https://viacep.com.br/ws/{0}/json/", cep);
 	}

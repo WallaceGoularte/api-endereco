@@ -27,7 +27,6 @@ public class EnderecoDTO implements Serializable {
 		public EnderecoDTO() {
 
 		}
-		
 
 		public EnderecoDTO(Endereco endereco) {
 			this.cep = endereco.getCep();

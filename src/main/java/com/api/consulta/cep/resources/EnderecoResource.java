@@ -16,19 +16,25 @@ import com.api.consulta.cep.domain.Endereco;
 import com.api.consulta.cep.dto.EnderecoDTO;
 import com.api.consulta.cep.services.EnderecoService;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+
 @RestController
 @RequestMapping(value = "api/endereco")
+@Api("API para consultar endereços por ceps")
 public class EnderecoResource {
 	
 	@Autowired
 	EnderecoService enderecoService;
 
 	@RequestMapping(method = RequestMethod.GET)
+	@ApiOperation("Buscar todos endereço na base interna")
 	public ResponseEntity<List<EnderecoDTO>> buscarTodosEnderecos() {
 		return ResponseEntity.ok().body(this.enderecoService.buscarTodosEnderecos());
 	}
 	
 	@RequestMapping(value = "/{cep}", method = RequestMethod.GET)
+	@ApiOperation("Buscar endereço na base interna ou externa pelo Cep")
 	public ResponseEntity<Endereco> listarJogosPorId(@PathVariable final String cep) {
 		Endereco endereco = this.enderecoService.buscarEnderecoPorCep(cep);
 		
@@ -40,11 +46,13 @@ public class EnderecoResource {
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
+	@ApiOperation("Cadastrar endereço na base interna")
 	public Endereco inserir(@RequestBody Endereco endereco) {
 		return this.enderecoService.inserirEndereco(endereco);
 	}
 	
 	@RequestMapping(value = "/{cep}", method = RequestMethod.POST)
+	@ApiOperation("Cadastrar endereço utilizando apenas o Cep")
 	public Endereco inserir(@RequestBody EnderecoDTO dto) {
 		if (dto.getCep() != null && !dto.getCep().isEmpty()) {
 			Endereco endereco = restTemplateForObject(dto.getCep());

@@ -17,3 +17,7 @@
 - Utilização de Collections
 - Lambda
 - Swagger
+
+
+#### API externa/pública utilizada:
+- https://viacep.com.br/ws/{cep}/json/
